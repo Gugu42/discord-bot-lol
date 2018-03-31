@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
+const https = require('https');
 
 
 
@@ -41,8 +42,55 @@ client.on('message', msg => {
     switch (command) {
       case 'sean':
         msg.channel.send('sean is an idiot');
+        break;
+      case 'btc':
+        return command_crypto(msg, 'BTC', 'bitcoin');
+      case 'eth':
+        return command_crypto(msg, 'ETH', 'ethereum');
+      case 'doge':
+        return command_crypto(msg, 'DOGE', 'dogecoin');
+      case 'coins':
+        return command_coins(msg);
     }
   }
 });
+
+
+function command_crypto(msg, cr, crypto) {
+  var data = "";
+
+  var req = https.get('https://api.coinmarketcap.com/v1/ticker/' + crypto + '/', (res) => {
+    res.on('data', (d) => {
+      data += d;
+    });
+
+    res.on('end', () => {
+      jsonData = JSON.parse(data);
+      msg.channel.send(`${cr} is worth ${jsonData[0].price_usd} usd`);
+    });
+  });
+}
+
+function command_coins(msg) {
+  msg.channel.send({
+    embed: {
+      color: 3447003,
+      title: "Coins list",
+      fields: [{
+          name: "€btc",
+          value: "this one is worth too much"
+        },
+        {
+          name: "€eth",
+          value: "the lower value, the better gpu prices"
+        },
+        {
+          name: "€doge",
+          value: "the only coin that matters"
+        }
+      ]
+    }
+  });
+}
 
 client.login('NDI5NTkyMTcyMDE5MzE4Nzk1' + '.DaD4ug.' + '9v3CfIm-KhvCygEcTfiDWxtcWGw');
