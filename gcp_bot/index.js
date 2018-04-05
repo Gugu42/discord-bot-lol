@@ -18,40 +18,46 @@ client.on('ready', () => {
 let PREFIX = '€';
 
 client.on('message', msg => {
-  const message = msg.content.trim().toLowerCase();
+  try {
+    const message = msg.content.trim().toLowerCase();
 
-  if (message === 'alex is a fucking') {
-    msg.channel.send('NIGGER');
-  }
-
-  if (message === 'amd') {
-    msg.channel.send('yes');
-  }
-
-  if (message === 'intel') {
-    msg.channel.send('no');
-  }
-
-  if (message === 'is sean right ?') {
-    msg.channel.send('sean is always wrong');
-  }
-
-  if (message.toLowerCase().startsWith(PREFIX.toLowerCase())) {
-    const command = message.substring(PREFIX.length).split(/[ \n]/)[0].toLowerCase().trim();
-
-    switch (command) {
-      case 'sean':
-        msg.channel.send('sean is an idiot');
-        break;
-      case 'btc':
-        return command_crypto(msg, 'BTC', 'bitcoin');
-      case 'eth':
-        return command_crypto(msg, 'ETH', 'ethereum');
-      case 'doge':
-        return command_crypto(msg, 'DOGE', 'dogecoin');
-      case 'coins':
-        return command_coins(msg);
+    if (message === 'alex is a fucking') {
+      msg.channel.send('NIGGER');
     }
+
+    if (message === 'amd') {
+      msg.channel.send('yes');
+    }
+
+    if (message === 'intel') {
+      msg.channel.send('no');
+    }
+
+    if (message === 'is sean right ?') {
+      msg.channel.send('sean is always wrong');
+    }
+
+    if (message.toLowerCase().startsWith(PREFIX.toLowerCase())) {
+      const command = message.substring(PREFIX.length).split(/[ \n]/)[0].toLowerCase().trim();
+
+      switch (command) {
+        case 'sean':
+          msg.channel.send('sean is an idiot');
+          break;
+        case 'btc':
+          return command_crypto(msg, 'BTC', 'bitcoin');
+        case 'eth':
+          return command_crypto(msg, 'ETH', 'ethereum');
+        case 'doge':
+          return command_crypto(msg, 'DOGE', 'dogecoin');
+        case 'coins':
+          return command_coins(msg);
+        case 'crashtest' :
+          return command_crashtest(msg);
+      }
+    }
+  } catch (err) {
+    console.log("Whew lad we crashed ! " + err);
   }
 });
 
@@ -91,6 +97,10 @@ function command_coins(msg) {
       ]
     }
   });
+}
+
+function command_crashtest(msg) {
+  throw "doesnt matter tbh";
 }
 
 client.login('NDI5NTkyMTcyMDE5MzE4Nzk1' + '.DaD4ug.' + '9v3CfIm-KhvCygEcTfiDWxtcWGw');
