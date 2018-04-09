@@ -1,6 +1,8 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const https = require('https');
+const http = require('http');
+const fs = require('fs');
 
 
 
@@ -54,6 +56,8 @@ client.on('message', msg => {
           return command_coins(msg);
         case 'crashtest' :
           return command_crashtest(msg);
+        case 'coco':
+          return command_coco(msg);
       }
     }
   } catch (err) {
@@ -102,5 +106,19 @@ function command_coins(msg) {
 function command_crashtest(msg) {
   throw "doesnt matter tbh";
 }
+
+function command_coco(msg) {
+  var data = "";
+
+  var req = http.get('http://thecatapi.com/api/images/get?format=html&type=jpg', (res) => {
+    res.on('data', (d) => {
+      data += d;
+    });
+
+    res.on('end', () => {
+      msg.channel.send(`${data.slice(data.indexOf('http://2'), data.length - 7)}`);
+    });
+  });
+} 
 
 client.login('NDI5NTkyMTcyMDE5MzE4Nzk1' + '.DaD4ug.' + '9v3CfIm-KhvCygEcTfiDWxtcWGw');
