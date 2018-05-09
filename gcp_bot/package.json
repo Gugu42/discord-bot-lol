@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "brain.js": "^1.2.1",
     "discord.js": "^11.3.2"
   }
 }

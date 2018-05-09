@@ -3,7 +3,7 @@ const client = new Discord.Client();
 const https = require('https');
 const http = require('http');
 const fs = require('fs');
-
+const ml = require('./ml');
 
 
 client.on('ready', () => {
@@ -14,7 +14,6 @@ client.on('ready', () => {
     }
   });
 });
-
 
 
 let PREFIX = '€';
@@ -39,6 +38,10 @@ client.on('message', msg => {
       msg.channel.send('sean is always wrong');
     }
 
+    if (message === 'sean is dumb') {
+      msg.channel.send('agreed');
+    }
+
     if (message.toLowerCase().startsWith(PREFIX.toLowerCase())) {
       const command = message.substring(PREFIX.length).split(/[ \n]/)[0].toLowerCase().trim();
 
@@ -58,7 +61,13 @@ client.on('message', msg => {
           return command_crashtest(msg);
         case 'coco':
           return command_coco(msg);
+        case 'gugu':
+          return command_gugu(msg);
       }
+    } else {
+      //any non-command will be written to our training data file
+      if(message.indexOf("http") == -1) //we don't want URLs
+        ml.addToBatch(message);
     }
   } catch (err) {
     console.log("Whew lad we crashed ! " + err);
@@ -104,6 +113,7 @@ function command_coins(msg) {
 }
 
 function command_crashtest(msg) {
+  msg.channel.send("??????????????????????????????");
   throw "doesnt matter tbh";
 }
 
@@ -120,5 +130,9 @@ function command_coco(msg) {
     });
   });
 } 
+
+function command_gugu(msg) {
+  msg.channel.send(`:eyes:`);
+}
 
 client.login('NDI5NTkyMTcyMDE5MzE4Nzk1' + '.DaD4ug.' + '9v3CfIm-KhvCygEcTfiDWxtcWGw');
