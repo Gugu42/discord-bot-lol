@@ -4,7 +4,9 @@ const https = require('https');
 const http = require('http');
 const fs = require('fs');
 const ml = require('./ml');
-const ytdl = require('ytdl-core');
+const vocalmemes = require('./vocalmemes');
+
+const config = JSON.parse(fs.readFileSync('./config/config.json', 'utf8'));
 
 
 client.on('ready', () => {
@@ -18,8 +20,6 @@ client.on('ready', () => {
 
 
 let PREFIX = '€';
-let currentVoiceChannel;
-let currentVoiceConnection;
 
 client.on('message', async msg => {
   try {
@@ -74,43 +74,7 @@ client.on('message', async msg => {
     }
 
     if(message.indexOf("hugger") !== -1) {
-      //hugger contextual commands
-      if(message.indexOf("join") !== -1) {
-        if(msg.member.voiceChannel) {
-          if(currentVoiceChannel === undefined) {
-            currentVoiceChannel = msg.member.voiceChannel;
-            currentVoiceConnection = await currentVoiceChannel.join();
-          } else {
-            msg.channel.send("i'm already in a voice channel get fucked idiot");
-          }
-        } else {
-          msg.channel.send("you're not in a voice channel my dude");
-        }
-      } else if (message.indexOf("leave") !== -1) {
-        if(currentVoiceChannel) {
-          currentVoiceChannel.leave();
-          currentVoiceConnection.disconnect();
-          currentVoiceConnection = undefined;
-          currentVoiceChannel = undefined;
-        }
-      } else if (message.indexOf("play") !== -1 && currentVoiceConnection) {
-        let words = msg.content.split(" ");
-        let url = "";
-        for(let w of words) {
-          if(w.indexOf("http") !== -1) {
-            url = w.toString();
-          }
-        }
-
-        if(url !== "") {
-          try {
-            const stream = ytdl(url, { filter: 'audioonly' });
-          } catch (err) {
-            msg.channel.send("that's not a youtube link is it ?");
-          }
-          currentVoiceConnection.playStream(stream);
-        }
-      }
+      vocalmemes.handleHuggerCommands(msg);
     }
 
   } catch (err) {
@@ -179,4 +143,4 @@ function command_gugu(msg) {
   msg.channel.send(`:eyes:`);
 }
 
-client.login('NDI5NTkyMTcyMDE5MzE4Nzk1' + '.DaD4ug.' + '9v3CfIm-KhvCygEcTfiDWxtcWGw');
+client.login(config.BOT_API_KEY);
