@@ -8,7 +8,6 @@ const xports = module.exports = {};
 
 let currentVoiceChannel;
 let currentVoiceConnection;
-let dispatcher;
 
 let queue = [];
 
@@ -54,6 +53,9 @@ xports.handleHuggerCommands = async (msg) => {
             else
                 msg.channel.send("something's already playing, but your shit is in my queue");
         }
+    } else if (message.indexOf("skip") !== -1 && currentVoiceConnection) {
+        let dispatcher = currentVoiceConnection.player.dispatcher;
+        dispatcher.end();
     }
 }
 
