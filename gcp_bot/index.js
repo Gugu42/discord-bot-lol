@@ -4,6 +4,7 @@ const https = require('https');
 const http = require('http');
 const fs = require('fs');
 const ml = require('./ml');
+const ytdl = require('ytdl-core');
 
 
 client.on('ready', () => {
@@ -17,8 +18,10 @@ client.on('ready', () => {
 
 
 let PREFIX = '€';
+let currentVoiceChannel;
+let currentVoiceConnection;
 
-client.on('message', msg => {
+client.on('message', async msg => {
   try {
     const message = msg.content.trim().toLowerCase();
 
@@ -69,6 +72,47 @@ client.on('message', msg => {
       if(message.indexOf("http") == -1) //we don't want URLs
         ml.addToBatch(message);
     }
+
+    if(message.indexOf("hugger") !== -1) {
+      //hugger contextual commands
+      if(message.indexOf("join") !== -1) {
+        if(msg.member.voiceChannel) {
+          if(currentVoiceChannel === undefined) {
+            currentVoiceChannel = msg.member.voiceChannel;
+            currentVoiceConnection = await currentVoiceChannel.join();
+          } else {
+            msg.channel.send("i'm already in a voice channel get fucked idiot");
+          }
+        } else {
+          msg.channel.send("you're not in a voice channel my dude");
+        }
+      } else if (message.indexOf("leave") !== -1) {
+        if(currentVoiceChannel) {
+          currentVoiceChannel.leave();
+          currentVoiceConnection.disconnect();
+          currentVoiceConnection = undefined;
+          currentVoiceChannel = undefined;
+        }
+      } else if (message.indexOf("play") !== -1 && currentVoiceConnection) {
+        let words = msg.content.split(" ");
+        let url = "";
+        for(let w of words) {
+          if(w.indexOf("http") !== -1) {
+            url = w.toString();
+          }
+        }
+
+        if(url !== "") {
+          try {
+            const stream = ytdl(url, { filter: 'audioonly' });
+          } catch (err) {
+            msg.channel.send("that's not a youtube link is it ?");
+          }
+          currentVoiceConnection.playStream(stream);
+        }
+      }
+    }
+
   } catch (err) {
     console.log("Whew lad we crashed ! " + err);
   }
