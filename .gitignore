@@ -1,2 +1,3 @@
 node_modules
 gcp_bot/config/config.json
+gcp_bot/training_data/batch0

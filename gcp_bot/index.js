@@ -25,7 +25,7 @@ client.on('message', async msg => {
   try {
     const message = msg.content.trim().toLowerCase();
 
-    if (message === 'alex is a fucking') {
+    if (message === 'alex is a stupid') {
       msg.channel.send('NIGGER');
     }
 

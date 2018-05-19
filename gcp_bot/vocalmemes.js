@@ -10,28 +10,18 @@ let currentVoiceChannel;
 let currentVoiceConnection;
 
 let queue = [];
+let aloneInterv;
 
 xports.handleHuggerCommands = async (msg) => {
     const message = msg.content.trim().toLowerCase();
     if (message.indexOf("join") !== -1) {
-        if (msg.member.voiceChannel) {
-            if (currentVoiceChannel === undefined) {
-                currentVoiceChannel = msg.member.voiceChannel;
-                currentVoiceConnection = await currentVoiceChannel.join();
-            } else {
-                msg.channel.send("i'm already in a voice channel get fucked idiot");
-            }
-        } else {
-            msg.channel.send("you're not in a voice channel my dude");
-        }
+        join(msg);
     } else if (message.indexOf("leave") !== -1) {
-        if (currentVoiceChannel) {
-            currentVoiceChannel.leave();
-            currentVoiceConnection.disconnect();
-            currentVoiceConnection = undefined;
-            currentVoiceChannel = undefined;
-        }
-    } else if (message.indexOf("play") !== -1 && currentVoiceConnection) {
+        leave();
+    } else if (message.indexOf("play") !== -1) {
+        if(!currentVoiceConnection)
+            await join(msg);
+        
         let words = msg.content.split(" ");
         let url = "";
         for (let w of words) {
@@ -65,7 +55,6 @@ playSong = (url, msg) => {
             filter: 'audioonly'
         });
 
-        console.log("Playing : " + url);
         let dispatcher = currentVoiceConnection.playStream(stream);
         dispatcher.on("end", () => {
             queue.shift();
@@ -90,4 +79,36 @@ getYoutubeURL = (search) => {
             resolve({url: res[0].link, title: res[0].title});
         });
     });
+}
+
+join = async (msg) => {
+    if (msg.member.voiceChannel) {
+        if (currentVoiceChannel === undefined) {
+            currentVoiceChannel = msg.member.voiceChannel;
+            currentVoiceConnection = await currentVoiceChannel.join();
+        } else {
+            msg.channel.send("i'm already in a voice channel get fucked idiot");
+        }
+
+        aloneInterv = setInterval(() => {
+            if(currentVoiceChannel && currentVoiceChannel.members.size <= 1) {
+                leave();
+                clearInterval(aloneInterv);
+            }
+        }, 15000);
+    } else {
+        msg.channel.send("you're not in a voice channel my dude");
+    }
+}
+
+leave = () => {
+    if (currentVoiceChannel) {
+        queue = [];
+        currentVoiceChannel.leave();
+        currentVoiceConnection.disconnect();
+        currentVoiceConnection = undefined;
+        currentVoiceChannel = undefined;
+        if(aloneInterv)
+            clearInterval(aloneInterv);
+    }
 }
