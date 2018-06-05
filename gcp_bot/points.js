@@ -51,7 +51,7 @@ xports.getPoints = async (msg) => {
         }
         var message = "Point rankings : \n";
         for(let user of scoreboard) {
-            message += user.username + " : " + user.points + "\n";
+            message += user.username + " : " + user.points.toFixed(1) + "\n";
         }
 
         msg.channel.send(message);
