@@ -10,7 +10,7 @@ firebase.initializeApp(firebaseConfig);
 
 var database = firebase.database();
 
-xports.addPoint = async (userID) => {
+xports.addPoint = async (userID, amount) => {
     var user = database.ref("/users/" + userID);
 
     var points = await new Promise(resolve => {
@@ -19,7 +19,7 @@ xports.addPoint = async (userID) => {
         });
     });
 
-    points++;
+    points += amount;
 
     user.update({
         "points": points

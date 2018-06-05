@@ -82,7 +82,7 @@ client.on('message', async msg => {
       vocalmemes.handleHuggerCommands(msg);
     }
 
-    points.addPoint(msg.author.id);
+    points.addPoint(msg.author.id, 1);
   } catch (err) {
     console.log("Whew lad we crashed ! " + err);
   }
@@ -156,7 +156,7 @@ function command_points(msg) {
 function addPointsToOnlineUsers() {
   client.guilds.forEach((guild) => {
     guild.members.forEach((member) => {
-      points.addPoint(member.id);
+      points.addPoint(member.id, 0.1);
     });
   });
 }
