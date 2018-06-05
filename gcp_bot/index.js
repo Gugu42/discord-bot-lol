@@ -5,6 +5,7 @@ const http = require('http');
 const fs = require('fs');
 const ml = require('./ml');
 const vocalmemes = require('./vocalmemes');
+const points = require('./points');
 
 const config = JSON.parse(fs.readFileSync('./config/config.json', 'utf8'));
 
@@ -16,6 +17,8 @@ client.on('ready', () => {
       name: "with his ass"
     }
   });
+
+  setInterval(addPointsToOnlineUsers, 60*1000);
 });
 
 
@@ -66,6 +69,8 @@ client.on('message', async msg => {
           return command_coco(msg);
         case 'gugu':
           return command_gugu(msg);
+        case 'points':
+          return command_points(msg);
       }
     } else {
       //any non-command will be written to our training data file
@@ -77,6 +82,7 @@ client.on('message', async msg => {
       vocalmemes.handleHuggerCommands(msg);
     }
 
+    points.addPoint(msg.author.id);
   } catch (err) {
     console.log("Whew lad we crashed ! " + err);
   }
@@ -141,6 +147,18 @@ function command_coco(msg) {
 
 function command_gugu(msg) {
   msg.channel.send(`:eyes:`);
+}
+
+function command_points(msg) {
+  points.getPoints(msg);
+}
+
+function addPointsToOnlineUsers() {
+  client.guilds.forEach((guild) => {
+    guild.members.forEach((member) => {
+      points.addPoint(member.id);
+    });
+  });
 }
 
 client.login(config.BOT_API_KEY);

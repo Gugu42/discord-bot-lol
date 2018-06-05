@@ -12,6 +12,7 @@
     "brain.js": "^1.2.1",
     "discord.js": "^11.3.2",
     "ffmpeg-binaries": "^3.2.2-3",
+    "firebase": "^5.0.4",
     "opusscript": "0.0.6",
     "youtube-search": "^1.1.0",
     "ytdl-core": "^0.20.4"
