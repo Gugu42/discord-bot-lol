@@ -46,7 +46,7 @@ xports.getPoints = async (msg) => {
 
         if(scoreboard.length > 0) {
             scoreboard.sort(function(a, b) {
-                return a.points - b.points;
+                return b.points - a.points;
             });
         }
         var message = "Point rankings : \n";
