@@ -156,7 +156,8 @@ function command_points(msg) {
 function addPointsToOnlineUsers() {
   client.guilds.forEach((guild) => {
     guild.members.forEach((member) => {
-      points.addPoint(member.id, 0.1);
+      if(member.presence.status === "online")
+        points.addPoint(member.id, 0.1);
     });
   });
 }
