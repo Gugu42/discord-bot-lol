@@ -8,6 +8,7 @@ const vocalmemes = require('./vocalmemes');
 const points = require('./points');
 
 const config = JSON.parse(fs.readFileSync('./config/config.json', 'utf8'));
+const homedir = require('os').homedir();
 
 
 client.on('ready', () => {
@@ -19,6 +20,9 @@ client.on('ready', () => {
   });
 
   setInterval(addPointsToOnlineUsers, 60*1000);
+
+  if(!fs.existsSync(homedir + "/hugger/"))
+    fs.mkdir(homedir + "/hugger");
 });
 
 
@@ -71,11 +75,13 @@ client.on('message', async msg => {
           return command_gugu(msg);
         case 'points':
           return command_points(msg);
+        case 'train': 
+          return command_train(msg);
       }
     } else {
       //any non-command will be written to our training data file
-      if(message.indexOf("http") == -1) //we don't want URLs
-        ml.addToBatch(message);
+      if(message.indexOf("http") == -1 && msg.author.username != client.user.username) //we don't want URLs
+        ml.addToBatch(msg);
     }
 
     if(message.indexOf("hugger") !== -1) {
@@ -160,6 +166,10 @@ function addPointsToOnlineUsers() {
         points.addPoint(member.id, 0.1);
     });
   });
+}
+
+function command_train(msg) {
+  ml.trainNetwork(msg);
 }
 
 client.login(config.BOT_API_KEY);

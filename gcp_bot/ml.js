@@ -1,14 +1,40 @@
-//var brain = require("brain.js");
+var brain = require("brain.js");
 var fs = require('fs');
-
-//var net = new brain.recurrent.LSTM();
+const homedir = require('os').homedir();
 
 var exports = module.exports = {};
 
 exports.addToBatch = (msg) => {
-    fs.appendFile('./training_data/batch0', msg + "\n", function (err) {
-        if (err) throw err;
+    let filePath = homedir + "/hugger/training_data.json";
+    
+    var json;
+
+    if(!fs.existsSync(filePath)) {
+        json = {data: []};
+        fs.writeFileSync(filePath, JSON.stringify(json));
+    }
+
+    fs.readFile(filePath, function(err, data) {
+        json = JSON.parse(data);
+        json.data.push(
+            {input: msg.content.trim(), output: msg.author.username}
+        )
+
+        fs.writeFile(filePath, JSON.stringify(json));
     });
 };
 
-//collecting data for now, will do ML memes once I get a good enough batch (500+ messages would be nice)
+exports.trainNetwork = (msg) => {
+    let filePath = homedir + "/hugger/training_data.json";
+    var jsonRaw = fs.readFileSync(filePath);
+    var jsonData = JSON.parse(jsonRaw);
+
+    var net = new brain.recurrent.LSTM();
+
+    var result = net.train(jsonData.data, {log: true, logPeriod: 2000});
+
+    msg.channel.send("im done training, error is like " + result.error);
+
+    var newNetwork = net.toJSON();
+    fs.writeFileSync(homedir + "/hugger/network.json", JSON.stringify(newNetwork));
+};
