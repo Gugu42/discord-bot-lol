@@ -77,12 +77,14 @@ client.on('message', async msg => {
           return command_points(msg);
         case 'train': 
           return command_train(msg);
+        case 'guess':
+          return command_guess(msg);
       }
-    } else {
+    }/* else {
       //any non-command will be written to our training data file
       if(message.indexOf("http") == -1 && msg.author.username != client.user.username) //we don't want URLs
         ml.addToBatch(msg);
-    }
+    }*/
 
     if(message.indexOf("hugger") !== -1) {
       vocalmemes.handleHuggerCommands(msg);
@@ -170,6 +172,10 @@ function addPointsToOnlineUsers() {
 
 function command_train(msg) {
   ml.trainNetwork(msg);
+}
+
+function command_guess(msg) {
+  ml.guessWho(msg);
 }
 
 client.login(config.BOT_API_KEY);
