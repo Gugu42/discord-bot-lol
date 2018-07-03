@@ -83,11 +83,11 @@ getYoutubeURL = (search) => {
 
 join = async (msg) => {
     if (msg.member.voiceChannel) {
-        if (currentVoiceChannel === undefined) {
+        if (currentVoiceChannel === undefined && msg.member.voiceChannel.joinable) {
             currentVoiceChannel = msg.member.voiceChannel;
             currentVoiceConnection = await currentVoiceChannel.join();
         } else {
-            msg.channel.send("i'm already in a voice channel get fucked idiot");
+            msg.channel.send("get fucked idiot");
         }
 
         aloneInterv = setInterval(() => {
