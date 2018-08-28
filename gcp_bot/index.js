@@ -79,6 +79,8 @@ client.on('message', async msg => {
           return command_train(msg);
         case 'guess':
           return command_guess(msg);
+        case 'amd':
+          return command_nasdaq(msg);
       }
     }/* else {
       //any non-command will be written to our training data file
@@ -176,6 +178,21 @@ function command_train(msg) {
 
 function command_guess(msg) {
   ml.guessWho(msg);
+}
+
+function command_nasdaq(msg) {
+  var data = "";
+
+  var req = https.get('https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=AMD&apikey=' + config.ALPHAVANTAGE_API_KEY, (res) => {
+    res.on('data', (d) => {
+      data += d;
+    });
+
+    res.on('end', () => {
+      data = JSON.parse(data);
+      msg.channel.send(`${data["Global Quote"]["05. price"]}$ -> ${data["Global Quote"]["10. change percent"]}`);
+    });
+  });
 }
 
 client.login(config.BOT_API_KEY);
