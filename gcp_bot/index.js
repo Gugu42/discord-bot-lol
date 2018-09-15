@@ -80,7 +80,11 @@ client.on('message', async msg => {
         case 'guess':
           return command_guess(msg);
         case 'amd':
-          return command_nasdaq(msg);
+          return command_nasdaq(msg, 'AMD');
+        case 'intel':
+          return command_nasdaq(msg, 'INTC');
+        case 'nvidia':
+          return command_nasdaq(msg, 'NVDA');
       }
     }/* else {
       //any non-command will be written to our training data file
@@ -180,10 +184,10 @@ function command_guess(msg) {
   ml.guessWho(msg);
 }
 
-function command_nasdaq(msg) {
+function command_nasdaq(msg, symbol) {
   var data = "";
 
-  var req = https.get('https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=AMD&apikey=' + config.ALPHAVANTAGE_API_KEY, (res) => {
+  var req = https.get('https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=' + symbol + '&apikey=' + config.ALPHAVANTAGE_API_KEY, (res) => {
     res.on('data', (d) => {
       data += d;
     });
