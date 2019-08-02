@@ -5,7 +5,7 @@ const http = require('http');
 const fs = require('fs');
 const ml = require('./ml');
 const vocalmemes = require('./vocalmemes');
-const points = require('./points');
+//const points = require('./points');
 
 const config = JSON.parse(fs.readFileSync('./config/config.json', 'utf8'));
 const homedir = require('os').homedir();
@@ -19,7 +19,7 @@ client.on('ready', () => {
     }
   });
 
-  setInterval(addPointsToOnlineUsers, 60*1000);
+  //setInterval(addPointsToOnlineUsers, 60*1000);
 
   if(!fs.existsSync(homedir + "/hugger/"))
     fs.mkdir(homedir + "/hugger");
@@ -73,8 +73,8 @@ client.on('message', async msg => {
           return command_coco(msg);
         case 'gugu':
           return command_gugu(msg);
-        case 'points':
-          return command_points(msg);
+        /*case 'points':
+          return command_points(msg);*/
         case 'train': 
           return command_train(msg);
         case 'guess':
@@ -92,7 +92,7 @@ client.on('message', async msg => {
       vocalmemes.handleHuggerCommands(msg);
     }
 
-    points.addPoint(msg.author.id, 1);
+    //points.addPoint(msg.author.id, 1);
   } catch (err) {
     console.log("Whew lad we crashed ! " + err);
   }
@@ -159,7 +159,7 @@ function command_gugu(msg) {
   msg.channel.send(`:eyes:`);
 }
 
-function command_points(msg) {
+/*function command_points(msg) {
   points.getPoints(msg);
 }
 
@@ -170,7 +170,7 @@ function addPointsToOnlineUsers() {
         points.addPoint(member.id, 0.1);
     });
   });
-}
+}*/
 
 function command_train(msg) {
   ml.trainNetwork(msg);
