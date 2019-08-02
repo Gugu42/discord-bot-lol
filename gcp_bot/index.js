@@ -86,11 +86,7 @@ client.on('message', async msg => {
         case 'nvidia':
           return command_nasdaq(msg, 'NVDA');
       }
-    }/* else {
-      //any non-command will be written to our training data file
-      if(message.indexOf("http") == -1 && msg.author.username != client.user.username) //we don't want URLs
-        ml.addToBatch(msg);
-    }*/
+    }
 
     if(message.indexOf("hugger") !== -1) {
       vocalmemes.handleHuggerCommands(msg);

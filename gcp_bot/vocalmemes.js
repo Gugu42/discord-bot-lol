@@ -1,6 +1,7 @@
 const ytdl = require('ytdl-core');
 const ytsearch = require('youtube-search');
 const fs = require('fs');
+const cron = require('node-schedule');
 
 const config = JSON.parse(fs.readFileSync('./config/config.json', 'utf8'));
 
@@ -11,6 +12,7 @@ let currentVoiceConnection;
 
 let queue = [];
 let aloneInterv;
+let cronJob = undefined;
 
 xports.handleHuggerCommands = async (msg) => {
     const message = msg.content.trim().toLowerCase();
@@ -46,6 +48,15 @@ xports.handleHuggerCommands = async (msg) => {
     } else if (message.indexOf("skip") !== -1 && currentVoiceConnection) {
         let dispatcher = currentVoiceConnection.player.dispatcher;
         dispatcher.end();
+    } else if (message.indexOf("missed you") !== -1) {
+        msg.channel.send("ur gay");
+    } else if (message.indexOf("bully") !== -1) {
+        msg.channel.send("hell yea");
+        if (cronJob === undefined) {
+            cronJob = cron.scheduleJob('0 0 * * * *', function() {
+                msg.channel.send("hey fatman you're bad at video games");
+            });
+        }
     }
 }
 
@@ -76,6 +87,9 @@ getYoutubeURL = (search) => {
         };
     
         ytsearch(search, opts, (err, res) => {
+            if (err) {
+                console.error(err);
+            }
             resolve({url: res[0].link, title: res[0].title});
         });
     });
@@ -95,7 +109,7 @@ join = async (msg) => {
                 leave();
                 clearInterval(aloneInterv);
             }
-        }, 15000);
+        }, 5000);
     } else {
         msg.channel.send("you're not in a voice channel my dude");
     }
